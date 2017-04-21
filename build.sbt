@@ -50,4 +50,4 @@ persistLauncher in Test := false
 
 jsDependencies += "org.webjars" % "jquery" % "1.10.2" / "jquery.js"
 
-jsDependencies += "org.webjars" % "jquery-ui" % "1.11.4" / "jquery-ui.js" dependsOn "jquery.js"
+jsDependencies += "org.webjars" % "jquery-ui" % "1.12.1" / "jquery-ui.js" dependsOn "jquery.js"
