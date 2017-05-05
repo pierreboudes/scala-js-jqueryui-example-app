@@ -20,7 +20,8 @@ grâce au workbench de Li Haoyi).
 
 Il est nécessaire qu'une copie du répertoire `deps` soit accessible
 depuis `index-dev.html`. Copier `deps` à l'endroit où vous comptez
-installer les fichiers et remplacer `/tracesdeps` par le répertoire d'installation.
+installer les fichiers et remplacer `/viz/traces` dans
+index-template.html par le répertoire d'installation.
 
 Lorsque le résultat est satisfaisant on peut obtenir une meilleure
 optimisation du code javascript en compilant avec `fullOptJS`, le
