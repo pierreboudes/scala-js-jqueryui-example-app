@@ -8,8 +8,10 @@ import scala.util.matching.Regex
 
 
 object Data {
+  var all_traces: List[String] =  List()
+  var all_etapes: Map[String, Etape] = Map()
 
-
+  /* transforme une étape en item pour le formulaire à auto-complétion */
   def etape2autocItemJS(e: Etape): js.Object = {
     val Etape(code, shortname, name, bacplus, composante) = e
     val id = code
@@ -19,10 +21,21 @@ object Data {
     js.Dynamic.literal(id = id, value = id, label = label, desc = desc)
   }
 
-  def csv2sankey(tracescsv: String, etape: String, etapes: Map[String, Etape]): (Int, js.Object) = {
-    val pattern = new Regex(etape + "$|" + etape + ";")
-    val lignes = tracescsv.split('\n').filter(pattern.findFirstIn(_).isDefined).map(_.split(';'))
+  /* produit un graphe acyclique des traces qui concernent un code
+  étape particulier TODO casser cette fonction en deux parties : la
+  production du graphe proprement dite (et le calcul de ses
+  dimensions) et la sélection des traces et
+   leur réécriture */
 
+  def select_group_traces(etapes: Set[String], groups: Map[String,String] = Map(), max: Int = 5) = {
+    val lignes = all_traces.map(_.split(';').map(_.split('.')))
+    lignes.filter(x => x.exists(etapes contains _.last)).map(_.map(
+      y => y.updated(y.length - 1, groups.getOrElse(y.last, y.last))
+    )).map(_.map(_.mkString("."))).filter(x => x(0).toInt >= max)
+
+  }
+
+  def traces2graph(traces: List[Array[String]]): (Int, js.Object) = {
 
     def levelling(a: Array[Array[String]]): Vector[(Int, String)] = {
       import scala.util.Try
@@ -34,10 +47,11 @@ object Data {
           } {
         b(j) = (b(i)._1 + 1, b(j)._2)
       }
-      b.toVector
+      b.toVector :+ (11,"alumni UP13")
     }
 
-    val flowgraph = lignes.map((x) => (x(0).toInt, levelling(x.drop(1).map(_.split('.').slice(0,2))))).groupBy(_._2).mapValues(_.map(_._1).sum).toList.zipWithIndex.map(t => (t._1._2, t._1._1, t._2))
+    /* arrange les traces par niveaux et les regroupe */
+    val flowgraph = traces.map((x) => (x(0).toInt, levelling(x.drop(1).map(_.split('.').slice(0,2))))).groupBy(_._2).mapValues(_.map(_._1).sum).toList.zipWithIndex.map(t => (t._1._2, t._1._1, t._2))
 
     val height = flowgraph.map(_._1).sum
     val nodes = flowgraph.flatMap(_._2).toSet.toList.sorted
@@ -61,7 +75,7 @@ object Data {
     def jsgraph(nodes: List[(Int,String)], links:List[(Int, Int, Int, Int)]) : js.Object = {
 
       val nodesjs = nodes.map((p: (Int, String)) => {
-        val desc = (etapes.get(p._2) match {
+        val desc = (all_etapes.get(p._2) match {
           case Some(Etape(c, s, n, b, co)) => s"${n}, Bac + ${b}, ${co}"
           case None => p._2
         })
