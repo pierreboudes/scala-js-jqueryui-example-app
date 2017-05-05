@@ -1,7 +1,7 @@
 // Turn this project into a Scala.js project by importing these settings
 enablePlugins(ScalaJSPlugin)
 
-name := "Scala.js Example with jQueryUI"
+name := "traces-viz"
 
 scalaVersion := "2.11.8"
 
@@ -27,7 +27,6 @@ def copyCss = Def.task {
   IO.writeLines(target,
     IO.readLines(source)
   )
-
 }
 
 Seq(
@@ -38,7 +37,9 @@ Seq(
     task <<= task.dependsOn(generateIndexTask(indexHtml, postfix), copyCss)
 }
 
-libraryDependencies += "be.doeraene" %%% "scalajs-jquery" % "0.9.0"
+libraryDependencies ++= Seq(
+  "be.doeraene" %%% "scalajs-jquery" % "0.9.0"
+)
 
 skip in packageJSDependencies := false
 
