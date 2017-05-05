@@ -1,17 +1,30 @@
-scala-js-jqueryui-example-app
+Traces-scalajs-sankey
 =============================
 
-an example app with scala.js, scala.js-jQuery adapter and jQueryUI
+Visualisation des parcours (traces) des étudiant·e·s par étapes de
+diplômes. En Scala compilé vers javascript (utilise Scala-js).
 
-## Get started
+Exemple d'utilisation : https://mindsized.org/viz/traces/
 
-To get started, open `sbt` in this example project, and issue the task
-`~fastOptJS`.
-You can now open `target\scala-2.11\index-dev.html` in your favorite Web browser!
+## Compilation vers html/js
 
-## The optimized version
+Prérequis : installer `sbt`.
 
-Instead of running `fastOptJS`, you can also run `fullOptJS` to generate
-a much more compact version of the JavaScript code. While `target\scala-2.11\index-dev.html`
-refers to the JavaScript emitted by `fastOptJS`, `target\scala-2.11\index.html` refers to the
-optimized JavaScript emitted by `fullOptJS`.
+Lancer `sbt`, lancer la compilation continue `~fastOptJS`
+(recompilation automatique à chaque modification d'un fichier source).
+
+Le résultat est visible dans : `target/scala-2.11/index-dev.html` (à
+ouvrir dans un navigateur en local ou servi sur le réseau), il faut
+recharger la page après chaque compilation (on peut aussi améliorer ça
+grâce au workbench de Li Haoyi).
+
+Il est nécessaire qu'une copie du répertoire `deps` soit accessible
+depuis `index-dev.html`. Copier `deps` à l'endroit où vous comptez
+installer les fichiers et remplacer `/tracesdeps` par le répertoire d'installation.
+
+Lorsque le résultat est satisfaisant on peut obtenir une meilleure
+optimisation du code javascript en compilant avec `fullOptJS`, le
+résultat sera alors écrit dans  `target/scala-2.11/index.html` qui
+pointera vers le code js optimisé.
+
+
